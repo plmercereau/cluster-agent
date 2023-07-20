@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/rpc"
 
-	"github.com/plmercereau/cluster-agent/pkg/agent/config"
+	"github.com/plmercereau/cluster-agent/pkg/config"
 )
 
 func OpenRequest() {

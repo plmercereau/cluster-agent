@@ -4,11 +4,12 @@ import (
 	"log"
 
 	"github.com/grandcat/zeroconf"
+	"github.com/plmercereau/cluster-agent/pkg/config"
 )
 
 func Publish(port int) {
 	// defer wg.Done()
-	s, err := zeroconf.Register(INSTANCE_NAME, SERVICE_NAME, DOMAIN, port, []string{"txtv=0", "lo=1", "la=2"}, nil)
+	s, err := zeroconf.Register(config.INSTANCE_NAME, config.SERVICE_NAME, config.DOMAIN, port, []string{"txtv=0", "lo=1", "la=2"}, nil)
 	if err != nil {
 		log.Fatalln(err)
 	}

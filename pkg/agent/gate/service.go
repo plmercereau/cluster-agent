@@ -5,14 +5,14 @@ import (
 
 	"github.com/plmercereau/cluster-agent/pkg/agent/gate/close"
 	"github.com/plmercereau/cluster-agent/pkg/agent/gate/open"
-	"github.com/plmercereau/cluster-agent/pkg/kiosk_server"
+	"github.com/plmercereau/cluster-agent/pkg/http_server"
 )
 
 type Gate struct {
 }
 
 func (g Gate) Close(_ close.CloseArgs, reply *string) error {
-	if !kiosk_server.IsLive() {
+	if !http_server.IsLive() {
 		log.Println("Gate is already closed.")
 	} else {
 		close.CloseGate()

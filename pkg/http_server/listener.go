@@ -1,4 +1,4 @@
-package kiosk_server
+package http_server
 
 import (
 	"net"

@@ -9,8 +9,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/plmercereau/cluster-agent/pkg/agent/config"
 	"github.com/plmercereau/cluster-agent/pkg/agent/gate"
+	"github.com/plmercereau/cluster-agent/pkg/config"
 )
 
 func Start() {

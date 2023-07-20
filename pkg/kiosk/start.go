@@ -7,15 +7,13 @@ import (
 	"net/rpc"
 	"sync"
 
-	"github.com/plmercereau/cluster-agent/pkg/kiosk_server"
+	"github.com/plmercereau/cluster-agent/pkg/http_server"
 )
 
-func StartServer(l net.Listener, wg *sync.WaitGroup) {
+func InitKiosk(l net.Listener, wg *sync.WaitGroup) {
 	port := l.Addr().(*net.TCPAddr).Port
 	log.Println("Starting HTTP server...")
 	go func() {
-		// defer l.Close()
-
 		mux := http.NewServeMux()
 
 		defer wg.Done() // let main know we are done cleaning up
@@ -26,8 +24,8 @@ func StartServer(l net.Listener, wg *sync.WaitGroup) {
 		handler.Register(joiner)
 		mux.Handle("/", handler)
 
-		err := kiosk_server.StartHttpServer(mux, l)
-		log.Println("HTTP server stopped:", err)
+		http_server.StartHttpServer(mux, l)
+		log.Println("HTTP server stopped.")
 	}()
 
 }

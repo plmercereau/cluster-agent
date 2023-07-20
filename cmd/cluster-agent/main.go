@@ -7,8 +7,7 @@ import (
 	"github.com/plmercereau/cluster-agent/pkg/agent"
 	"github.com/plmercereau/cluster-agent/pkg/agent/gate/close"
 	"github.com/plmercereau/cluster-agent/pkg/agent/gate/open"
-
-	"github.com/plmercereau/cluster-agent/pkg/join"
+	"github.com/plmercereau/cluster-agent/pkg/kiosk/join"
 )
 
 func main() {

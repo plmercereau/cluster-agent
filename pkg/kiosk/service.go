@@ -1,6 +1,6 @@
 package kiosk
 
-import "github.com/plmercereau/cluster-agent/pkg/join"
+import "github.com/plmercereau/cluster-agent/pkg/kiosk/join"
 
 type Kiosk struct {
 }

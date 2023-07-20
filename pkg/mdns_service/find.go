@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/grandcat/zeroconf"
+	"github.com/plmercereau/cluster-agent/pkg/config"
 )
 
 func ReachCluster() string {
@@ -17,7 +18,7 @@ func ReachCluster() string {
 	}
 
 	entries := make(chan *zeroconf.ServiceEntry)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*TIMEOUT_IN_SECONDS)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*config.TIMEOUT_IN_SECONDS)
 	var address string
 	go func(results <-chan *zeroconf.ServiceEntry) {
 		for entry := range results {
@@ -31,7 +32,7 @@ func ReachCluster() string {
 
 	}(entries)
 
-	err = resolver.Lookup(ctx, INSTANCE_NAME, SERVICE_NAME, "local.", entries)
+	err = resolver.Lookup(ctx, config.INSTANCE_NAME, config.SERVICE_NAME, "local.", entries)
 	defer cancel()
 	if err != nil {
 		log.Fatalln("Failed to browse:", err.Error())
