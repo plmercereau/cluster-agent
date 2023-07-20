@@ -7,7 +7,7 @@ import (
 	"github.com/plmercereau/cluster-agent/pkg/agent"
 	"github.com/plmercereau/cluster-agent/pkg/agent/gate/close"
 	"github.com/plmercereau/cluster-agent/pkg/agent/gate/open"
-	"github.com/plmercereau/cluster-agent/pkg/kiosk/join"
+	"github.com/plmercereau/cluster-agent/pkg/kiosk"
 )
 
 func main() {
@@ -23,7 +23,8 @@ func main() {
 		close.CloseRequest()
 
 	case "join":
-		join.JoinCluster()
+		client := kiosk.Connect()
+		client.Join()
 
 	default:
 		log.Fatalln("Unknown command.")

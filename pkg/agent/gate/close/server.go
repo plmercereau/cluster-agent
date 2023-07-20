@@ -23,5 +23,5 @@ func CloseGate() {
 	// httpServerExitDone.Done()
 	mdns_service.Unpublish()
 
-	log.Printf("Gate to join the cluster is closed.")
+	log.Printf("Gate to join the cluster is now closed.")
 }
