@@ -2,11 +2,12 @@ package kiosk
 
 import (
 	"log"
+	"net"
 	"net/rpc"
+	"os"
 
 	"github.com/plmercereau/cluster-agent/pkg/kiosk/join"
 	"github.com/plmercereau/cluster-agent/pkg/mdns_service"
-	"github.com/plmercereau/cluster-agent/pkg/pacemaker"
 )
 
 type KioskClient struct {
@@ -19,26 +20,22 @@ func (k *KioskClient) Join() {
 	// TODO run the pacemaker command to join the cluster once the cluster is configured
 
 	// https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/high_availability_add-on_reference/s1-clusternodemanage-haar
-	// TODO not hardcoded
-	host := "node2"
-	username := "hacluster"
-	password := "admin"
+	hostname, _ := os.Hostname()
 
 	var reply string
 	args := join.JoinArgs{
-		Host:     host,
-		Username: username,
-		Password: password,
+		IP:   getOutboundIP(),
+		Host: hostname,
+		// TODO not hardcoded
+		Username: "hacluster",
+		Password: "admin",
 	}
 
 	err := k.client.Call("Kiosk.Join", args, &reply)
 	if err != nil {
 		log.Fatalln("Error calling service Kiosk.Join", err)
 	}
-	log.Println(reply)
-	pacemaker.StartCluser()
-	pacemaker.EnableCluster()
-	log.Println("The node", "node2", "has joined the cluster.")
+	log.Printf("The node %s (%s) has joined the cluster.", args.Host, args.IP)
 	// TODO sync the Nix configuration
 
 }
@@ -50,4 +47,16 @@ func Connect() *KioskClient {
 		log.Fatalln("Cannot dial HTTP", err)
 	}
 	return &KioskClient{client: client}
+}
+
+func getOutboundIP() net.IP {
+	conn, err := net.Dial("udp", "8.8.8.8:80")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Close()
+
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+
+	return localAddr.IP
 }

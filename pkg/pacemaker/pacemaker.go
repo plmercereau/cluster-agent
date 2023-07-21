@@ -1,7 +1,9 @@
 package pacemaker
 
 import (
+	"fmt"
 	"log"
+	"net"
 	"os/exec"
 )
 
@@ -21,31 +23,19 @@ func DeactivateMaintenanceMode() error {
 
 }
 
-func AuthenticateNode(host string, username string, password string) error {
+func AuthenticateNode(host string, address net.IP, username string, password string) error {
 	// TODO use authkey instead of password. See: pcs cluster auth --help
 	log.Println("Authenticating Node...")
-	cmd := exec.Command("pcs", "host", "auth", host, "-u", username, "-p", password)
+	cmd := exec.Command("pcs", "host", "auth", host, fmt.Sprintf("addr=%s", address.String()), "-u", username, "-p", password)
 	_, err := cmd.Output()
 	return err
 }
 
-func AddNode(host string) error {
+func AddNode(name string) error {
 	log.Println("Adding node...")
-	cmd := exec.Command("pcs", "cluster", "node", "add", host)
-	_, err := cmd.Output()
-	return err
-}
 
-func StartCluser() error {
-	log.Println("Starting cluster...")
-	cmd := exec.Command("pcs", "cluster", "start", "--all")
-	_, err := cmd.Output()
-	return err
-}
-
-func EnableCluster() error {
-	log.Println("Enabling cluster...")
-	cmd := exec.Command("pcs", "cluster", "enable", "--all")
+	// * See the last part of https://clusterlabs.org/pacemaker/doc/deprecated/en-US/Pacemaker/2.0/html/Clusters_from_Scratch/_configure_corosync.html
+	cmd := exec.Command("pcs", "cluster", "node", "add", name, "--start", "--enabe")
 	_, err := cmd.Output()
 	return err
 }
