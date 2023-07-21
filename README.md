@@ -1,6 +1,6 @@
 # Cluster agent
 
-Agent to automatically connect a new node to a Pacemaker cluster.
+Agent to automatically connect a new node to a nearby Pacemaker cluster.
 
 ## TODO
 
