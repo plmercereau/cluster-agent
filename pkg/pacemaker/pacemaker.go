@@ -24,18 +24,22 @@ func DeactivateMaintenanceMode() error {
 }
 
 func AuthenticateNode(host string, address net.IP, username string, password string) error {
-	// TODO use authkey instead of password. See: pcs cluster auth --help
-	log.Println("Authenticating Node...")
+	log.Printf("Authenticating %s (%s)...\n", host, address.String())
 	cmd := exec.Command("pcs", "host", "auth", host, fmt.Sprintf("addr=%s", address.String()), "-u", username, "-p", password)
-	_, err := cmd.Output()
+	output, err := cmd.Output()
+	if err != nil {
+		log.Printf("Error authenticating %s: %s\n", host, string(output))
+	}
 	return err
 }
 
 func AddNode(name string) error {
-	log.Println("Adding node...")
-
+	log.Printf("Adding %s...\n", name)
 	// * See the last part of https://clusterlabs.org/pacemaker/doc/deprecated/en-US/Pacemaker/2.0/html/Clusters_from_Scratch/_configure_corosync.html
-	cmd := exec.Command("pcs", "cluster", "node", "add", name, "--start", "--enabe")
-	_, err := cmd.Output()
+	cmd := exec.Command("pcs", "cluster", "node", "add", name, "--start", "--enable")
+	output, err := cmd.Output()
+	if err != nil {
+		log.Printf("Error adding %s: %s\n", name, string(output))
+	}
 	return err
 }
