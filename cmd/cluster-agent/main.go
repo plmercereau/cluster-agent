@@ -9,7 +9,6 @@ import (
 	"os/exec"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/grandcat/zeroconf"
 	"github.com/plmercereau/cluster-agent/pkg/config"
@@ -68,7 +67,7 @@ func main() {
 		}
 
 		entries := make(chan *zeroconf.ServiceEntry)
-		ctx, _ := context.WithTimeout(context.Background(), time.Hour*122)
+		ctx := context.Background()
 
 		go func(results <-chan *zeroconf.ServiceEntry) {
 			for entry := range results {
@@ -76,7 +75,10 @@ func main() {
 				ip := ips[len(ips)-1]
 				hostname := strings.TrimSuffix(entry.HostName, "."+entry.Domain)
 				password := entry.Text[0]
-				pacemaker.ActivateMaintenanceMode()
+				maintenanceActivationError := pacemaker.ActivateMaintenanceMode()
+				if maintenanceActivationError != nil {
+					continue
+				}
 				authError := pacemaker.AuthenticateNode(hostname, ip, "hacluster", password)
 				if authError != nil {
 					continue
@@ -87,7 +89,6 @@ func main() {
 				}
 				// TODO run only if the maintenance mode was activated
 				pacemaker.DeactivateMaintenanceMode()
-
 			}
 
 		}(entries)
